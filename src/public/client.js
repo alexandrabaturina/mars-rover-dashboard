@@ -1,15 +1,25 @@
-let store = {
-    user: { name: "Student" },
+let currentState = Immutable.Map({
     apod: '',
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-}
+    activeRoverData: {
+        'name': '',
+        'landingDate': '',
+        'launchDate': '',
+        'status': '',
+        'photos': [],
+    },
+    rovers: [
+        'Curiosity',
+        'Opportunity',
+        'Spirit'
+    ]
+});
 
-// add our markup to the page
 const root = document.getElementById('root')
 
-const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
-    render(root, store)
+// Update current state
+const updateState = (currentState, newState) => {
+    currentState = Object.assign(currentState, newState);
+    render(root, currentState);
 }
 
 const render = async (root, state) => {
@@ -24,11 +34,8 @@ const App = (state) => {
     return `
         <header></header>
         <main>
-            ${Greeting(store.user.name)}
             <section>
-                <h3>Put things on the page!</h3>
-                <p>Here is an example section.</p>
-                <p>
+                 <p>
                     One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
                     the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
                     This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
@@ -50,18 +57,6 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
-        return `
-            <h1>Welcome, ${name}!</h1>
-        `
-    }
-
-    return `
-        <h1>Hello!</h1>
-    `
-}
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
@@ -72,7 +67,7 @@ const ImageOfTheDay = (apod) => {
     console.log(photodate.getDate(), today.getDate());
 
     console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.date === today.getDate() ) {
+    if (!apod || apod.date === today.getDate()) {
         getImageOfTheDay(store)
     }
 
@@ -101,5 +96,37 @@ const getImageOfTheDay = (state) => {
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
 
-    return data
+    // return data
 }
+
+// Fetch rover data from server
+const getRoverData = (name) => {
+    fetch(`http://localhost:3000/rover-data/${name}`)
+        .then(res => res.json())
+        .then((data) => {
+            let roverData = {
+                activeRoverData: {
+                    'name': name,
+                    'landingDate': `${data.data.photos[0].rover.landing_date}`,
+                    'launchDate': `${data.data.photos[0].rover.launch_date}`,
+                    'status': `${data.data.photos[0].rover.status}`,
+                    'photos': [
+                        [data.data.photos[0].img_src, data.data.photos[0].camera.full_name, data.data.photos[0].earth_date],
+                        [data.data.photos[1].img_src, data.data.photos[1].camera.full_name, data.data.photos[1].earth_date],
+                        [data.data.photos[2].img_src, data.data.photos[2].camera.full_name, data.data.photos[2].earth_date],
+                        [data.data.photos[3].img_src, data.data.photos[3].camera.full_name, data.data.photos[3].earth_date],
+                        [data.data.photos[4].img_src, data.data.photos[4].camera.full_name, data.data.photos[4].earth_date],
+                        [data.data.photos[5].img_src, data.data.photos[5].camera.full_name, data.data.photos[5].earth_date],
+                        [data.data.photos[6].img_src, data.data.photos[6].camera.full_name, data.data.photos[6].earth_date],
+                        [data.data.photos[7].img_src, data.data.photos[7].camera.full_name, data.data.photos[7].earth_date],
+                        [data.data.photos[8].img_src, data.data.photos[8].camera.full_name, data.data.photos[8].earth_date]
+                    ]
+                }
+            };
+            console.log(data);
+            console.log(`${name.charAt(0).toUpperCase() + name.slice(1)} rover data received.`);
+            updateState(currentState, roverData);
+        })
+}
+
+getRoverData('spirit');
