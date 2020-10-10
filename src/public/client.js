@@ -22,32 +22,11 @@ const updateState = (currentState, newState) => {
     render(root, currentState);
 }
 
+// Render page
 const render = async (root, state) => {
-    root.innerHTML = App(state)
-}
-
-
-// create content
-const App = (currentState) => {
-    let { rovers, apod } = currentState
-
-    return `
-        <header></header>
-        <main>
-            <section>
-                 <p>
-                    One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
-                    the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
-                    This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
-                    applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
-                    explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
-                    but generally help with discoverability of relevant imagery.
-                </p>
-                ${ImageOfTheDay(apod)}
-            </section>
-        </main>
-        <footer></footer>
-    `
+    root.innerHTML = App(state);
+    const roverLinks = Array.from(document.querySelectorAll('li'));
+    roverLinks.map(li => addRoverLinks(li, toLowerCase));
 }
 
 // Listen for load
@@ -55,12 +34,101 @@ window.addEventListener('load', () => {
     render(root, currentState);
 })
 
+const toLowerCase = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+// Listen for clicks on rover name
+const addRoverLinks = (li, callback) => {
+    li.addEventListener('click', event => {
+        const activeLink = event.target.innerText;
+        const activeRoverName = callback(activeLink);
+        getRoverData(activeRoverName);
+
+    });
+}
+
+const createImageDescription = (image) => {
+    return `
+    <img src="${image[0]}">
+    <p>${image[1]}</p>
+    <p>${image[2]}</p>
+    `
+}
+
+const generatePhotoGrid = (photos, callback) => {
+    let photoGridHTML = '';
+    for (photo of photos) {
+        photoGridHTML += `
+        <div class="one-image">
+            ${callback(photo)}
+        </div>
+    `
+    };
+    return photoGridHTML;
+};
+
+// Display rover data
+const displayRoverData = (activeRoverData, callback) => {
+
+    const { name, landingDate, launchDate, status, photos } = activeRoverData;
+
+    return `
+        <div>
+            <h1>${callback(name)} Rover Data</h1>
+            <p> Landing date: ${landingDate} </p>
+            <p> Launch date: ${launchDate} </p>
+            <p> Status: ${status} </p>
+            <div class="images">
+                ${generatePhotoGrid(photos, createImageDescription)}
+            </div>
+        </div>
+    `;
+};
+
+// create content
+const App = (currentState) => {
+    let { activeRoverData, apod } = currentState
+
+    if (apod) {
+        return `
+            <header></header>
+            <main>
+                <section>
+                    <p>
+                        One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
+                        the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
+                        This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
+                        applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
+                        explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
+                        but generally help with discoverability of relevant imagery.
+                    </p>
+                    ${ImageOfTheDay(apod)}
+                </section>
+            </main>
+            <footer></footer>
+    `
+    } else if (activeRoverData) {
+        displayRoverData(activeRoverData, toLowerCase);
+
+        return `
+            ${createMenu(currentState.get('rovers'))}
+            ${displayRoverData(activeRoverData, toLowerCase)}
+        `
+    }
+
+    return `
+    ${createMenu(currentState.get('rovers'))}
+    <p> Select rover name to explore data.</p>
+`;
+}
+
+
 
 // Create navigation menu
 const createMenu = (rovers) => {
     return `
     <ul>
-        <li>APOD</li>
         ${rovers
             .map((rover) => `<li><a href="#">${rover}</a></li>`)
             .join("")}
@@ -80,7 +148,7 @@ const ImageOfTheDay = (apod) => {
 
     console.log(photodate.getDate() === today.getDate());
     if (!apod || apod.date === today.getDate()) {
-        getImageOfTheDay(store)
+        getImageOfTheDay(currentState)
     }
 
     // check if the photo of the day is actually type video!
@@ -107,7 +175,7 @@ const getImageOfTheDay = (currentState) => {
         .then(res => res.json())
         .then(apod => updateStore(currentState, { apod }))
 
-    // return data
+    return data
 }
 
 // Fetch rover data from server
@@ -135,7 +203,7 @@ const getRoverData = (name) => {
                 }
             };
             console.log(data);
-            console.log(`${name.charAt(0).toUpperCase() + name.slice(1)} rover data received.`);
+            console.log(`${toLowerCase(name)} rover data received.`);
             updateState(currentState, roverData);
         })
 }
