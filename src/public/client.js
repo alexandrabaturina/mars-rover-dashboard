@@ -28,8 +28,8 @@ const render = async (root, state) => {
 
 
 // create content
-const App = (state) => {
-    let { rovers, apod } = state
+const App = (currentState) => {
+    let { rovers, apod } = currentState
 
     return `
         <header></header>
@@ -50,12 +50,24 @@ const App = (state) => {
     `
 }
 
-// listening for load event because page should load before any JS is called
+// Listen for load
 window.addEventListener('load', () => {
-    render(root, store)
+    render(root, currentState);
 })
 
-// ------------------------------------------------------  COMPONENTS
+
+// Create navigation menu
+const createMenu = (rovers) => {
+    return `
+    <ul>
+        <li>APOD</li>
+        ${rovers
+            .map((rover) => `<li><a href="#">${rover}</a></li>`)
+            .join("")}
+    </ul>
+    `;
+}
+
 
 
 // Example of a pure function that renders infomation requested from the backend
@@ -86,15 +98,14 @@ const ImageOfTheDay = (apod) => {
     }
 }
 
-// ------------------------------------------------------  API CALLS
 
 // Example API call
-const getImageOfTheDay = (state) => {
-    let { apod } = state
+const getImageOfTheDay = (currentState) => {
+    let { apod } = currentState
 
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
-        .then(apod => updateStore(store, { apod }))
+        .then(apod => updateStore(currentState, { apod }))
 
     // return data
 }
@@ -129,4 +140,3 @@ const getRoverData = (name) => {
         })
 }
 
-getRoverData('spirit');
