@@ -16,6 +16,26 @@ main {
   padding: 20px;
 }
 
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  background-color: #a9bcc6;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+li {
+  width: 33%;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #02334a;
+  font-weight: 600;
+}
+
 footer {
   /* footer styles */
 }
