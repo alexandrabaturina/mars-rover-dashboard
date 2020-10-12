@@ -5,6 +5,8 @@ body {
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
+  background-color: #f1f1f0;
+  color: #091d36;
 }
 
 header {
@@ -18,22 +20,27 @@ main {
 
 ul {
   list-style: none;
+  width: 99%;
   display: flex;
   flex-direction: row;
-  background-color: #a9bcc6;
+  background-color: #091d36;
   padding-top: 7px;
   padding-bottom: 7px;
 }
 
 li {
-  width: 33%;
+  width: 33.3%;
   text-align: center;
 }
 
 a {
   text-decoration: none;
-  color: #02334a;
+  color: #f1f1f0;
   font-weight: 600;
+}
+
+a:hover {
+  color: #c2d2e9;
 }
 
 footer {
@@ -45,6 +52,39 @@ footer {
   /* use mobile */
 }
 
+.rover-data {
+  padding-top: 30px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.rover-data > h1 {
+  padding-bottom: 15px;
+  color: #3a4e7a;
+  font-weight: 900;
+}
+
+.rover-data > p {
+  padding-bottom: 5px;
+  font-weight: 600;
+}
+
+
+.images {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 50px;
+  row-gap: 30px;
+  padding-top: 20px;
+}
+
+.one-image {
+  width: 100%;
+}
+
+.image-description {
+  font-weight: 600;
+}
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {

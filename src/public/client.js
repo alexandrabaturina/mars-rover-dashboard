@@ -51,8 +51,8 @@ const addRoverLinks = (li, callback) => {
 const createImageDescription = (image) => {
     return `
     <img src="${image[0]}">
-    <p>${image[1]}</p>
-    <p>${image[2]}</p>
+    <p class="image-description">${image[1]}</p>
+    <p class="image-description">${image[2]}</p>
     `
 }
 
@@ -74,12 +74,12 @@ const displayRoverData = (activeRoverData, callback) => {
     const { name, landingDate, launchDate, status, photos } = activeRoverData;
 
     return `
-        <div>
-            <h1>${callback(name)} Rover Data</h1>
-            <p> Landing date: ${landingDate} </p>
-            <p> Launch date: ${launchDate} </p>
-            <p> Status: ${status} </p>
-            <div class="images">
+        <div class='rover-data'>
+            <h1>${callback(name)} Rover</h1>
+            <p class="lanading-date"> Landing Date: ${landingDate} </p>
+            <p class="launch-date"> Launch Date: ${launchDate} </p>
+            <p class="mission-status"> Mission Status: ${status} </p>
+            <div class='images'>
                 ${generatePhotoGrid(photos, createImageDescription)}
             </div>
         </div>
@@ -90,25 +90,7 @@ const displayRoverData = (activeRoverData, callback) => {
 const App = (currentState) => {
     let { activeRoverData, apod } = currentState
 
-    if (apod) {
-        return `
-            <header></header>
-            <main>
-                <section>
-                    <p>
-                        One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
-                        the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
-                        This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
-                        applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
-                        explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
-                        but generally help with discoverability of relevant imagery.
-                    </p>
-                    ${ImageOfTheDay(apod)}
-                </section>
-            </main>
-            <footer></footer>
-    `
-    } else if (activeRoverData) {
+    if (activeRoverData) {
         displayRoverData(activeRoverData, toLowerCase);
 
         return `
@@ -116,11 +98,29 @@ const App = (currentState) => {
             ${displayRoverData(activeRoverData, toLowerCase)}
         `
     }
+    // return `
+    //         <header></header>
+    //         <main>
+    //             <section>
+    //                 <p>
+    //                     One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
+    //                     the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
+    //                     This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
+    //                     applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
+    //                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
+    //                     but generally help with discoverability of relevant imagery.
+    //                 </p>
+    //                 ${ImageOfTheDay(apod)}
+    //             </section>
+    //         </main>
+    //         <footer></footer>
+    // `
+
 
     return `
-    ${createMenu(currentState.get('rovers'))}
-    <p> Select rover name to explore data.</p>
-`;
+        ${createMenu(currentState.get('rovers'))}
+        <p> Select rover name to explore data.</p>
+    `;
 }
 
 
@@ -140,7 +140,6 @@ const createMenu = (rovers) => {
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
-
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
     const photodate = new Date(apod.date)
