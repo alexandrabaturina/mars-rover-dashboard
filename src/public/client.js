@@ -84,8 +84,8 @@ const displayRoverData = (activeRoverData, callback) => {
     `
 };
 
-// create content
-const App = (currentState) => {
+// Create content
+const App = currentState => {
     let { activeRoverData } = currentState
 
     if (activeRoverData) {
@@ -107,24 +107,23 @@ const App = (currentState) => {
 const createMenu = rovers => (
     `
     <ul>
-        ${rovers.map(rover =>
-        `<li>
-            <a href="#">${rover}</a>
-        </li>`).join("")}
+        ${rovers
+        .map(rover =>
+            `<li><a href="#">${rover}</a></li>`)
+        .join("")}
     </ul>
     `
 )
 
-
 // Fetch rover data from server
-const getRoverData = (name) => {
+const getRoverData = name => {
     fetch(`http://localhost:3000/rover-data/${name}`)
         .then(res => res.json())
         .then(data => {
-
             let { name, landing_date, launch_date, status } = data.data[0].rover
             let photoData = [];
-            let getPhotoData = data.data.map(rover => photoData.push([rover.img_src, rover.camera.full_name, rover.earth_date]))
+            let getPhotoData = data.data.map(rover =>
+                photoData.push([rover.img_src, rover.camera.full_name, rover.earth_date]))
             let roverData = {
                 activeRoverData: {
                     'name': name,
