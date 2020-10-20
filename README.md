@@ -11,6 +11,9 @@ The project has the following goals:
   * A gallery of the most recent images sent from each mars rover
   * The launch date, landing date, name and status of the rover
   * A navigation menu for the user to choose which rover's information they want to see
+  
+  ![image](https://user-images.githubusercontent.com/53233637/96525157-17621980-122f-11eb-9d43-3ad3a9875204.png)
+  
 * UI is responsive on the following devices:
   * Phones (max-width 768px)
   * Desktop (min-width 991px, max-width 1824px)
