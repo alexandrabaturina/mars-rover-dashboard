@@ -22,7 +22,29 @@ Frontend code meets the following requirements:
 * ```ImmutableJS``` library is used
 ### Backend Code
 Backend code meets the following requirements:
-* The app is built *Node/Express*
-* Calls to the NASA API are made successfully
+* The app is built with ***Node/Express***
+* Calls to the [NASA API](https://api.nasa.gov/) are made successfully
 * To do any logic necessary, only pure functions are used
 * Any sensitive information is hidden from the public vies
+## Getting Started
+### Prerequisites
+1. Download [NASA API key](https://api.nasa.gov/).
+2. Clone this repo.
+3. ```cd``` into project directory.
+4. Create ```.env``` file and specify the credentials:
+```
+API_KEY = <your-api-key>
+```
+### Running Locally
+To run **Mars Rover Dashboard** from project directory,
+1. Install dependencies.
+```sh
+npm install
+```
+2. Start the server.
+```sh
+npm start
+```
+3. Access  http://localhost:3000 in your browser.
+## Authors
+Alexandra Baturina
